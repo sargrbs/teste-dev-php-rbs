@@ -10,8 +10,6 @@
     - Redis (cache)
     - Laravel Octane com Swoole
     - Laravel Sanctum para autenticação
-    - Repository Pattern
-    - Clean Architecture
 
 ## 📋 Pré-requisitos
 
@@ -181,9 +179,6 @@
 
         # Rodar migrations
         php artisan migrate
-
-        # Rodar testes
-        php artisan test
     
     Testes:
         php artisan test
