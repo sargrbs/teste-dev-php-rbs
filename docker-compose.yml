@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: supplier_api
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8000:8000"
+    networks:
+      - supplier_net
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: mysql:8.0
+    container_name: supplier_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: supplier_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: password
+      MYSQL_USER: supplier
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - supplier_net
+
+  redis:
+    image: redis:alpine
+    container_name: supplier_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - supplier_net
+
+networks:
+  supplier_net:
+    driver: bridge
+
+volumes:
+  dbdata:
