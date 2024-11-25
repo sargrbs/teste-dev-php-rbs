@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SupplierRequest;
 use App\Manager\SupplierManager;
+use App\Models\Supplier;
 use App\Repositories\Contracts\SupplierRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -30,7 +31,13 @@ class SupplierController extends Controller
     {
         $data = $request->validated();
 
-        return $this->supplierManager->createSupplier($data);
+        $supplier = $this->supplierManager->createSupplier($data);
+        if ($supplier instanceof Supplier) {
+            return response()->json($supplier, 201);
+        } else {
+            return response()->json(['message' => 'Supplier not created'], 500);
+        }
+        return ;
     }
 
     public function show($id)

@@ -49,7 +49,7 @@ class SupplierRepository implements SupplierRepositoryInterface
         return $result;
     }
 
-    public function create(array $data): Supplier
+    public function create(array $data): string|Supplier
     {
         $existingSupplier = $this->model->withTrashed()
             ->where('document', $data['document'])
@@ -65,7 +65,7 @@ class SupplierRepository implements SupplierRepositoryInterface
                 return $existingSupplier;
             }
 
-            throw new \Exception('Fornecedor já cadastrado com este documento.');
+            return 'Fornecedor já cadastrado com este documento.';
         }
 
         $supplier = $this->model->create($data);

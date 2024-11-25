@@ -40,13 +40,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 COPY . .
-
-RUN composer install
+COPY .env .env
+RUN git config --global --add safe.directory /var/www/html
+RUN composer install --no-interaction -vvv
 
 RUN npm install -g chokidar-cli
 
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
 EXPOSE 8000
 
-CMD php artisan octane:start --host=0.0.0.0 --port=8000 --watch
+RUN chmod +x setup.sh
+RUN chmod 755 setup.sh
+CMD ["bash", "./setup.sh"]

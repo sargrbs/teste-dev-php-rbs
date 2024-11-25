@@ -37,7 +37,7 @@
         DB_CONNECTION=mysql
         DB_HOST=db
         DB_PORT=3306
-        DB_DATABASE=supplier_db
+        DB_DATABASE=supplier_data
         DB_USERNAME=supplier
         DB_PASSWORD=password
 
@@ -55,8 +55,7 @@
     5. Entre no container da aplicação:
         docker-compose exec app bash
 
-    6. Configure o projeto:    
-        php artisan key:generate
+    6. Configure o projeto:
         php artisan migrate
 
 ## 📚 Estrutura do projeto
@@ -151,6 +150,36 @@
     5. Listar Fornecedores com Filtro
         curl -X GET "http://localhost:8000/api/suppliers?search=termo&page=1" \
         -H "Authorization: Bearer {token}"
+
+    6. Deletar Fornecedor
+        curl -X DELETE "http://localhost:8000/api/suppliers/{ID} \
+        -H "Authorization: Bearer {token}"
+
+    6. Atualizar Fornecedor
+        curl -X PUT "http://localhost:8000/api/suppliers/{ID} \
+        -H "Authorization: Bearer {token}"
+        -H "Content-Type: application/json" \
+        -d '{
+            "name": "Fornecedor Teste",
+            "document": "12345678901234",
+            "document_type": "CNPJ",
+            "email": "fornecedor@teste.com",
+            "phone": "11999999999",
+            "street": "Rua Teste",
+            "number": "123",
+            "neighborhood": "Centro",
+            "city": "São Paulo",
+            "state": "SP",
+            "zip_code": "12345678"
+        }'
+
+    7. Buscar dados brasilapi   
+        curl -X POST "http://localhost:8000/api/suppliers/find-cnpj \
+        -H "Authorization: Bearer {token}"
+        -H "Content-Type: application/json" \
+        -d '{
+            "cnpj": "49335021000157"
+        }' 
     
 ## 🛠️ Comandos Úteis
 

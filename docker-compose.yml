@@ -22,7 +22,7 @@ services:
     container_name: supplier_db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: supplier_db
+      MYSQL_DATABASE: supplier_data
       MYSQL_ROOT_PASSWORD: root
       MYSQL_PASSWORD: password
       MYSQL_USER: supplier

@@ -64,7 +64,7 @@ class SupplierManager extends AbstractManager
         return $result;
     }
 
-    public function createSupplier($data): Supplier
+    public function createSupplier($data): string|Supplier
     {
         $cnpj = preg_replace('/[^0-9]/', '', (string) $data['document']);
         $data['document'] = $cnpj;
