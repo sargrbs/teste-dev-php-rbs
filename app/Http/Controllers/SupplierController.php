@@ -6,6 +6,7 @@ use App\Http\Requests\SupplierRequest;
 use App\Manager\SupplierManager;
 use App\Models\Supplier;
 use App\Repositories\Contracts\SupplierRepositoryInterface;
+use App\Rules\DocumentValidation;
 use Illuminate\Http\Request;
 
 class SupplierController extends Controller
@@ -51,9 +52,28 @@ class SupplierController extends Controller
         return $supplier;
     }
 
-    public function update(SupplierRequest $request, int $id)
+    public function update(Request $request, Supplier $supplier)
     {
-        return $this->supplierManager->update($id, $request->validated());
+        $data = json_decode($request->getContent(), true);
+
+        $documentType = strtoupper($data['document_type'] ?? $supplier->document_type);
+
+        $validated = validator($data, [
+            'name' => 'sometimes|string|max:255',
+            'document' => ['sometimes', 'string', new DocumentValidation($documentType)],
+            'document_type' => 'sometimes|string|in:CPF,CNPJ',
+            'email' => 'sometimes|email|max:255',
+            'phone' => 'sometimes|string|max:20',
+            'street' => 'sometimes|string|max:255',
+            'number' => 'sometimes|string|max:20',
+            'complement' => 'sometimes|nullable|string|max:255',
+            'neighborhood' => 'sometimes|string|max:255',
+            'city' => 'sometimes|string|max:255',
+            'state' => 'sometimes|string|size:2',
+            'zip_code' => 'sometimes|string|max:8',
+        ])->validate();
+
+        return $this->supplierManager->update($supplier, $validated);
     }
 
     public function destroy(int $id)

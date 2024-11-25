@@ -106,19 +106,14 @@ class SupplierManager extends AbstractManager
         return $supplier;
     }
 
-    public function update(int $id, $data): Supplier
+    public function update(Supplier $supplier, $data): Supplier
     {
-        $supplier = $this->repository->findById($id);
-
-        if (!$supplier) {
-            return response()->json(['message' => 'Supplier not found'], 404);
-        }
-
+        $result = $this->repository->update($supplier, $data);
         $this->deleteCache("id:{$supplier->id}");
         $this->deleteCache("document:{$supplier->document}");
         $this->clearCache();
 
-        return $this->repository->update($supplier, $data);
+        return $result;
     }
 
     public function deleteSupplier(int $id): JsonResponse

@@ -20,30 +20,24 @@ class SupplierRequest extends FormRequest
             'phone' => 'required|string',
             'street' => 'required|string',
             'number' => 'required|string',
+            'complement' => 'nullable|string',
             'neighborhood' => 'required|string',
             'city' => 'required|string',
             'state' => 'required|string|size:2',
             'zip_code' => 'required|string|size:8',
         ];
 
-        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
-            foreach ($rules as $field => $rule) {
-                $rules[$field] = str_replace('required|', '', $rule);
+        if ($this->isMethod('PATCH')) {
+            foreach ($rules as $field => &$rule) {
+                $rule = str_replace('required|', 'sometimes|', $rule);
             }
         }
 
-        $documentRule = ['required', 'string'];
-
-        if ($this->isMethod('POST') || $this->has('document')) {
-            $documentRule[] = 'unique:suppliers,document' .
-                ($this->route('supplier') ? ',' . $this->route('supplier') : '');
-        }
-
-        $rules['document'] =  [
-                'required',
-                'string',
-                new DocumentValidation($this->document_type),
-                'unique:suppliers,document' . ($this->supplier ? ',' . $this->supplier->id : '')
+        $rules['document'] = [
+            $this->isMethod('PATCH') ? 'sometimes' : 'required',
+            'string',
+            new DocumentValidation($this->input('document_type')),
+            'unique:suppliers,document' . ($this->supplier ? ',' . $this->supplier->id : '')
         ];
 
         return $rules;
